@@ -25,10 +25,11 @@ with open ('Data/test', 'rb') as fp:
     model=("Model name. Defaults to blank 'en' model.", "option", "m", str),
     new_model_name=("New model name for model meta.", "option", "nm", str),
     output_dir=("Optional output directory", "option", "o", Path),
-    n_iter=("Number of training iterations", "option", "n", int))
+    n_iter=("Number of training iterations", "option", "n", int)
+)
 
 # def main(model=None, new_model_name='new_model', output_dir=None, n_iter=10):
-"""Setting up the pipeline and entity recognizer, and training the new entity."""
+#"""Setting up the pipeline and entity recognizer, and training the new entity."""
 parameters = dict()
 if model is not None:
     nlp = spacy.load(model)  # load existing spacy model

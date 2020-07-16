@@ -1,20 +1,16 @@
 import json
 import extract_key as ek
-import web_speech2text as s2t
 import web_text2speech as t2s
-import requests
 from fuzzywuzzy import process
 import ner
 import requests
 import github_parser as g_parser
-
 
 def load_data(filepath):
     with open(filepath, "r") as f:
         data = json.load(f)
     f.close()
     return data
-
 
 def find_intersection(doc_list):
     doc_id = list()
@@ -23,7 +19,6 @@ def find_intersection(doc_list):
     for i in range(1, l):
         doc_id.intersection_update(set(doc_list[i]))
     return list(doc_id)
-
 
 def prepare_lookup(data):
     look_up = dict()
@@ -55,13 +50,12 @@ def process_ftq(look_up, query, repo_list):
             doc_list.append(look_up[word])
     if(len(doc_list) == 0):
         t2s.say("Query not recognized!!")
-        # print("Query not recognized!!")
+
 
     else:
         doc_id = find_intersection(doc_list)
         if(len(doc_id) == 0):
             t2s.say("Query not so accurate, try the following suggestions...")
-            # print("Query not so accurate, try the following suggestions...")
             show_suggestions(query)
 
         elif(len(doc_id) == 1):
@@ -155,14 +149,9 @@ def fetch_parameters(query):
 
 def execute(query):
     repo_list = []
-    # intro_string = "Hello user, I am IPM, your Jarvis from Team Intelleneur"
-    # t2s.say(intro_string)
     filepath = "github_data.json"
     data = load_data(filepath)
     look_up = prepare_lookup(data)
-    # t2s.say("Please enter the query")
-    # query = s2t.listen()
-    # query = input("Enter query = ")
     if len(query) == 1:
         process_owq(look_up, query)
     else:
@@ -173,7 +162,3 @@ all_parameter_list = ['username', 'repo', 'org', 'owner',
                       'language', 'branch', 'creator', 'body', 'query']
 
 
-# query = input("how can I help you?")
-# print(query)
-# repo_list = execute(query)
-# print(json.dumps(repo_list, indent=2, sort_keys=True))

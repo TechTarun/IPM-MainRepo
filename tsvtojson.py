@@ -1,6 +1,5 @@
 import json
 import logging
-import sys
 def tsv_to_json_format(input_path,output_path,unknown_label):
     try:
         f=open(input_path,'r') # input file

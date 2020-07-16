@@ -3,7 +3,6 @@ import web_text2speech as t2s
 
 def listen():
     r = sr.Recognizer()
-    # r.energy_threshold = 1000
     r.pause_threshold = 0.5
     mic = sr.Microphone()
     with mic as source:

@@ -1,4 +1,3 @@
-#import django_heroku
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -32,7 +31,7 @@ INSTALLED_APPS = [
      'Confluence.apps.ConfluenceConfig',
      'Github.apps.GithubConfig',
      'Jira.apps.JiraConfig',
-    'mailsearcher.apps.MailsearcherConfig',
+     'mailsearcher.apps.MailsearcherConfig',
 ]
 
 MIDDLEWARE = [
@@ -118,8 +117,6 @@ STATICFILES_DIRS =[
 os.path.join(BASE_DIR,'static')
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
-# Activate Django-Heroku.
-#django_heroku.settings(locals())
 
 #config variables
 #credentials
