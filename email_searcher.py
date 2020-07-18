@@ -1,4 +1,3 @@
-# Final Ok From my side
 import imaplib
 import email
 import mailparser
@@ -22,7 +21,6 @@ def single_email_search(username, password, criteria):
     FROM_EMAIL = username
     FROM_PWD = password
     SMTP_SERVER = "imap.gmail.com"
-    SMTP_PORT = 993
     mail = imaplib.IMAP4_SSL(SMTP_SERVER)
     mail.login(FROM_EMAIL, FROM_PWD)
     mail.select('inbox')
@@ -57,7 +55,6 @@ def all_email_search(username, password, criteria):
     FROM_EMAIL = username
     FROM_PWD = password
     SMTP_SERVER = "imap.gmail.com"
-    SMTP_PORT = 993
     mail = imaplib.IMAP4_SSL(SMTP_SERVER)
     mail.login(FROM_EMAIL, FROM_PWD)
     mail.select('inbox')
