@@ -1,0 +1,5 @@
+JIRA_BASE_URL = "https://abesit-ipm.atlassian.net"
+JIRA_USER_EMAIL = "tarunagarwal27.99@gmail.com"
+JIRA_ACCESS_TOKEN = "tl4F0d5aapRqiR7BfGkiBBDD"
+SENDER_MAIL_ID = "testitonpython@gmail.com"
+SENDER_MAIL_PASSWORD = "test@password"
