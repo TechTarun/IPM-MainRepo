@@ -6,8 +6,8 @@ import json
 
 base_url = "https://abesit-ipm.atlassian.net"
 auth = HTTPBasicAuth("tarunagarwal27.99@gmail.com", "tl4F0d5aapRqiR7BfGkiBBDD")
-all_projects = list()
-all_users = list()
+all_projects = dict()
+all_users = dict()
 
 def getAllProjects():
   url = "/rest/api/2/project/search"
@@ -27,9 +27,8 @@ def getAllProjects():
   for ctr in range(total_projects):
     details = dict()
     details['projectId'] = result[ctr]['id']
-    details['projectKey'] = result[ctr]['key']
     details['projectName'] = result[ctr]['name']
-    all_projects.append(details)
+    all_projects[result[ctr]['key']] = details
   return all_projects
 
 def getAllUsers():
@@ -49,13 +48,13 @@ def getAllUsers():
   for ctr in range(total_users):
     details = dict()
     if result[ctr]['accountType'] == 'atlassian':
-      details['accountId'] = result[ctr]['accountId']
+      details['Name'] = result[ctr]['displayName']
       details['emailAddress'] = result[ctr]['emailAddress']
-      all_users.append(details)
+      all_users[result[ctr]['accountId']] = details
   return all_users
 
-getAllProjects()
-getAllUsers()
-print(all_projects)
-print(all_users)
+# getAllProjects()
+# getAllUsers()
+# print(all_projects)
+# print(all_users)
 # getSpecificProject()
