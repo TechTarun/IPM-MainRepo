@@ -13,7 +13,35 @@ body {
   background-size: cover;
 }
 
-<!--.sidenav {-->
+ul {
+  list-style-type: none;
+  margin: -8px;
+ /* padding: 0;*/
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #111;
+}
+
+/*<!--.sidenav {-->
 <!--  height: 100%;-->
 <!--  width: 0;-->
 <!--  position: fixed;-->
@@ -47,7 +75,7 @@ body {
 <!--@media screen and (max-height: 450px) {-->
 <!--  .sidenav {padding-top: 15px;}-->
 <!--  .sidenav a {font-size: 18px;}-->
-<!--}-->
+<!--}-->*/
 
 /*search*/
 
@@ -128,7 +156,7 @@ input#search-bar{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: -1;
   width: 100%;
   height:100%;
   /*padding: 20px;*/
@@ -142,12 +170,23 @@ input#search-bar{
 </style>
 </head>
 <body>
+
+<ul>
+  <li><a href="{% url 'profill'%}">Home</a></li>
+  <li><a href="{% url 'jira'%}">Jira</a></li>
+  <li><a href="{% url 'Confluence'%}">Confluence</a></li>
+  <li><a href="{% url 'Github'%}">Github</a></li>
+  <li><a href="{% url 'mailsearcher'%}">Email</a></li>
+
+  <li style="float:right"><a class="active" href="{% url 'index'%}">Logout</a></li>
+</ul>
+
     <div class="bg-image"></div>
 
 <div class="bg-text">
 
 <div id="mySidenav" class="sidenav">
-     <a href="{% url 'profill'%}"><a href="{% url 'profill'%}"><img src="https://cdn4.iconfinder.com/data/icons/rounded-black-basic-ui/139/Home01-RoundedBlack-512.png" style="width: 70px; height: 70px;float:left;"></a>
+     <!-- <a href="{% url 'profill'%}"><a href="{% url 'profill'%}"><img src="https://cdn4.iconfinder.com/data/icons/rounded-black-basic-ui/139/Home01-RoundedBlack-512.png" style="width: 70px; height: 70px;float:left;"></a> -->
    <!--  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
 <!--    <a href="{% url 'profill'%}">Profile</a>-->
 <!--  <a href="{% url 'jira'%}">Jira</a>-->
@@ -162,8 +201,9 @@ input#search-bar{
 <!--<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>-->
 <div style="margin-top: 100px; margin-left:20px;">
    <img src="https://cdn.freebiesupply.com/logos/large/2x/jira-logo-black-and-white.png" style="width: 415px; max-height: 250px;margin-left: 540px; padding-bottom: 37px;margin-top: 22px; ">
-   <form class="search-container">
-    <input type="text" id="search-bar" placeholder="What can I help you with today?">
+   <form class="search-container" action="{% url 'search_github' %}" method="POST" >
+    {% csrf_token %}
+    <input type="text" id="search-bar" placeholder="What can I help you with today?" name="query">
     <a href="#"><a href="#"><img class="search-icon" src="https://webstockreview.net/images/microphone-clipart-logo-10.png" style=" width: 90PX;
     height: 42px;
     top: -45px;
@@ -172,8 +212,10 @@ input#search-bar{
 
   </form>
   </div>
-<div>
-<!-- for python script -->
+<div style="text-align: center;">
+  {% for r in repo %}
+  <h4>{{r}}</h4>
+  {%endfor%}
 </div>
 
   </div>

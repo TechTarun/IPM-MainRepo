@@ -14,6 +14,38 @@ body {
 }
 
 
+ul {
+  list-style-type: none;
+  margin: -8px;
+ /* padding: 0;*/
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
+}
+
+.active {
+  background-color: #111;
+}
+
+
+
+
+
 /*search*/
 
 
@@ -93,7 +125,7 @@ input#search-bar{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
+  z-index: -1;
   width: 100%;
   height:100%;
   /*padding: 20px;*/
@@ -107,12 +139,22 @@ input#search-bar{
 </style>
 </head>
 <body>
+      <ul>
+  <li><a href="{% url 'profill'%}">Home</a></li>
+  <li><a href="{% url 'jira'%}">Jira</a></li>
+  <li><a href="{% url 'Confluence'%}">Confluence</a></li>
+  <li><a href="{% url 'Bitbucket'%}">Bitbucket</a></li>
+  <li><a href="{% url 'mailsearcher'%}">Email</a></li>
+
+  <li style="float:right"><a class="active" href="{% url 'index'%}">Logout</a></li>
+</ul>
+
     <div class="bg-image"></div>
 
 <div class="bg-text">
 
 <div id="mySidenav" class="sidenav">
-    <a href="{% url 'profill'%}"><img src="https://cdn4.iconfinder.com/data/icons/rounded-black-basic-ui/139/Home01-RoundedBlack-512.png" style="width: 70px; height: 70px;float:left;"></a>
+    <!-- <a href="{% url 'profill'%}"><img src="https://cdn4.iconfinder.com/data/icons/rounded-black-basic-ui/139/Home01-RoundedBlack-512.png" style="width: 70px; height: 70px;float:left;"></a> -->
 
 <!--  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>-->
 <!--    <a href="{% url 'profill'%}">Profile</a>-->
