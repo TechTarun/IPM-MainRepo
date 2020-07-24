@@ -3,7 +3,6 @@ from . import views
 
 urlpatterns = [
 
-    path('', views.mailsearcher, name="mailsearcher"),
-    path('listen', views.listen, name='listen'),
-    path('search', views.search, name='search'),
+    path('', views.Mailsearcher, name="mailsearcher"),
+    path('listen', views.listenMailQuery, name='listen_mail'),
 ]

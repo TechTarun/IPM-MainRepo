@@ -1,12 +1,11 @@
 from django.shortcuts import render
+from InputOutputFiles import Speech_to_Text as listen
 
 def Github(request):
     return render(request, 'Github/github.html')
-def search(request):
-    query = request.POST.get('query')
-    return render(request, 'Github/Github.html', {'repo' : repo_list})
 
-def listen(request):
-    intro = "Hello user,I am IPM,Your Jarvis from Team intelleneur."
-    return render(request, 'Github/Github.html', {'repo' : repo_list})
+def listenGithubQuery(request):
+    query = listen.listenInput()
+    return render(request, 'Github/Github.html', {'query' : query})
+
 

@@ -1,7 +1,7 @@
 import speech_recognition as sr
 import Text_to_Speech as speak
 
-def listen_input():
+def listenInput():
     r = sr.Recognizer()
     # r.energy_threshold = 500
     # r.pause_threshold = t
@@ -13,5 +13,3 @@ def listen_input():
     text = r.recognize_google(audio, language='en')
     speak.say(text)
     return text
-
-print(listen_input())

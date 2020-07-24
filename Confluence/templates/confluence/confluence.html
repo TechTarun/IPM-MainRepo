@@ -205,11 +205,11 @@ input#search-bar{
 <!--<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>-->
 <div style="margin-top: 100px; margin-left:20px;">
    <img src="https://cdn.freebiesupply.com/logos/large/2x/confluence-logo-black-and-white.png" style="width: 511px; height: 137px;margin-left: 532px; padding-bottom: 51px;margin-top:62px; ">
-   <form class="search-container" action="{% url 'search_github' %}" method="POST">
+   <form class="search-container" action="#" method="POST">
     {% csrf_token %}
-    <input type="text" id="search-bar" placeholder="What can I help you with today?" name="query">
-    <a href="#"><a href="#"><img class="search-icon" src="https://webstockreview.net/images/microphone-clipart-logo-10.png" style="width:90PX; height: 48px; top: -46px;"></a>
-    <a href="#"><a href="#"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png" style="float:left;left:-16px;"></a>
+    <input type="text" id="search-bar" placeholder="What can I help you with today?" name="query" value='{{query}}'>
+    <a href="listen"><img class="search-icon" src="https://webstockreview.net/images/microphone-clipart-logo-10.png" style="width:90PX; height: 48px; top: -46px;"></a>
+    <a href="#"><img class="search-icon" src="http://www.endlessicons.com/wp-content/uploads/2012/12/search-icon.png" style="float:left;left:-16px;"></a>
 
   </form>
   </div>

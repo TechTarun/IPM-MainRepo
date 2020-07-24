@@ -321,15 +321,16 @@ of Simple CSS Waves-->
     <div class="search-wrapper">
 
     <div class="input-holder">
-        <form class="search-container" action="{% url 'search' %}" method="post">
+        <form class="search-container" action="#" method="post">
        {% csrf_token %}
-        <input type="text" class="search-input" placeholder="{{text}}" name="query"/>
+        <input type="text" class="search-input" placeholder="What can I help you with today?"
+ name="query" value='{{query}}'/>
         <button type ="submit" class="search-icon" onclick="searchToggle(this, event);"><span></span></button>
         </form>
     </div>
     <span class="close" onclick="searchToggle(this, event);"></span>
 </div>
-    <div><a href="{% url 'listen' %}" id="icon-mic"></a></div>
+    <div><a href="listen" id="icon-mic"></a></div>
 <!--Content before waves-->
 <div class="inner-header flex">
 <!--Just the logo.. Don't mind this-->

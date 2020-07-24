@@ -1,16 +1,12 @@
 from django.shortcuts import render
+from InputOutputFiles import Speech_to_Text as listen
 
-def mailsearcher(request):
-    text="What can I help you with today?"
-    mail = ""
-    return render(request, 'mailsearcher/mailsearcher.html', {'text':text, 'mail_list':mail})
+def Mailsearcher(request):
+    query=""
+    return render(request, 'mailsearcher/mailsearcher.html', {'query':query})
 
-def listen(request):
-    intro = "Hello user,I am IPM,Your Jarvis from Team intelleneur."
-    return render(request, 'mailsearcher/mailsearcher.html', {'text': text, 'mail_list':mail})
-
-def search(request):
-    query = request.POST.get('query')
-    return render(request, 'mailsearcher/mailsearcher.html', {'text': text, 'mail_list':mail})
+def listenMailQuery(request):
+    query = listen.listenInput()
+    return render(request, 'mailsearcher/mailsearcher.html', {'query':query})
 
 
