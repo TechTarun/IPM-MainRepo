@@ -1,15 +1,6 @@
 import json
 from github import Github
 import Github_get_started as github
-import sys
-
-# sys.path.append("./Mail files")
-# # sys.path.append("../Input Output files")
-# sys.path.append("../Input Output files")
-# sys.path.append("../Mail files")
-# sys.path.append("../IPM")
-
-# import config_file
 import send_mail
 import Text_to_Speech as speak
 
