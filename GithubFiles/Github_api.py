@@ -1,16 +1,16 @@
 import json
 from github import Github
-import Github_get_started as github
-import send_mail
-import Text_to_Speech as speak
+import Github_get_started as git_start
+from MailFiles import send_mail
 
 class Git(object):          #named Git to avoid name conflicts
 
-    git = Github("3c0450a2f009731b56e0f6c3a683cea6f3cc6044")
-    all_repo = github.getAllRepo()
-    user = github.getUser()
-    output = ""
-    mail_body = dict()
+    def __init__(self, access_token):
+        git = Github(access_token)
+        all_repo = git_start.getAllRepo()
+        user = git_start.getUser()
+        output = ""
+        mail_body = dict()
 
     def searchRepoByLanguage(self,lan):
         try:
@@ -29,7 +29,8 @@ class Git(object):          #named Git to avoid name conflicts
                 self.output = "No such repository found."
         except:
             self.output ="Error in getting the information"
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
         
     def listOfOpenIssues(self,reponame):
         try:
@@ -45,8 +46,9 @@ class Git(object):          #named Git to avoid name conflicts
             else:
                 self.output = "No issues found"
         except:
-            self.output="Error in geeting the information"
-        speak.say(self.output)
+            self.output="Error in getting the information"
+        # speak.say(self.output)
+        return self.output
         
 
     def getLabelsOfRepo(self,reponame):
@@ -114,8 +116,9 @@ class Git(object):          #named Git to avoid name conflicts
         except:
             self.output = "Error in creating repository."
         speak.say(self.output)
+        return self.output
 
-    def createANewFileInRepo(self,reponame,filename,description="This is default description",commit="latest commit"):
+    def createNewFileInRepo(self,reponame,filename,description="This is default description",commit="latest commit"):
         try:
             repo = self.git.get_user().get_repo(reponame)               #to avoid passing username, use get_user()
             repo.create_file(filename, commit, description)
@@ -130,6 +133,7 @@ class Git(object):          #named Git to avoid name conflicts
         except:
             self.output="Error in creating the file"
         speak.say(self.output)
+        return self.output
 
     def deleteAFileFromRepo(self,reponame,filename):
         try:
@@ -187,7 +191,7 @@ class Git(object):          #named Git to avoid name conflicts
     #     pr = repo.create_pull(title = title1, body = body1, head='')
     # ====================================================================================
 
-    def createANewIssue(self,reponame,title):
+    def createNewIssue(self,reponame,title):
         try:
             repo = self.git.get_user().get_repo(reponame)
             repo.create_issue(title=title)
@@ -200,6 +204,7 @@ class Git(object):          #named Git to avoid name conflicts
         except:
             self.output = "Error in creating the issue."
         speak.say(self.output)
+        return self.output
 
     def createIssueWithBody(self,reponame,title,body):
         try:
@@ -279,10 +284,11 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output = "Error in closing the issues."
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
 
 
-github = Git()
+# github = Git()
 # github.searchRepoByLanguage('Python')   #use capital P
 # github.searchRepoByLanguage('python')   
 # github.listOfOpenIssues('gittest')

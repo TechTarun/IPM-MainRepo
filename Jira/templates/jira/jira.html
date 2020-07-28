@@ -201,7 +201,7 @@ input#search-bar{
 <!--<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>-->
 <div style="margin-top: 100px; margin-left:20px;">
    <img src="https://cdn.freebiesupply.com/logos/large/2x/jira-logo-black-and-white.png" style="width: 415px; max-height: 250px;margin-left: 540px; padding-bottom: 37px;margin-top: 22px; ">
-   <form class="search-container" action="#" method="POST" >
+   <form class="search-container" action="{%url 'jira_search'%}" method="POST" >
     {% csrf_token %}
     <input type="text" id="search-bar" placeholder="What can I help you with today?" name="query" value='{{query}}'>
     <a href="listen"><img class="search-icon" src="https://webstockreview.net/images/microphone-clipart-logo-10.png" style=" width: 90PX;
@@ -213,9 +213,7 @@ input#search-bar{
   </form>
   </div>
 <div style="text-align: center;">
-  {% for r in repo %}
-  <h4>{{r}}</h4>
-  {%endfor%}
+  {{output}}
 </div>
 
   </div>

@@ -6,7 +6,6 @@ port = 465  # For SSL
 smtp_server = "smtp.gmail.com"
 sender_email = config_file.SENDER_MAIL_ID  # Enter your address
 password = config_file.SENDER_MAIL_PASSWORD
-# print(sys.path)
 
 def sendMail(message):
 	receiver_email = "tarunagarwal27.99@gmail.com"  # Enter receiver address

@@ -1,4 +1,3 @@
-#pip3 install PyGithub
 from github import Github
 import json
 
@@ -9,7 +8,6 @@ all_users = list()
 
 def getAllRepo():
     for repo in git.get_user().get_repos():
-        # print(repo.name)
         details = dict()
         details['reponame'] = repo.name
         all_repo.append(details)
@@ -18,10 +16,4 @@ def getAllRepo():
 def getUser():
     user = git.get_user()
     uname = user.login
-    # print(uname)
     return uname
-
-getAllRepo()
-getUser()
-# print(getAllRepo())
-# print(getUser())

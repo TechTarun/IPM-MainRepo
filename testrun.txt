@@ -1,0 +1,176 @@
+Hi
+hello si
+r
+
+so you have a query coming in like this
+
+Create a repository with name abcd
+, right ? okk sir
+
+
+
+keep this kind of dictionary, at the base
+from github_module import github_create_repo_func 
+from bitbucket_module import bitbucket_create_repo_func
+
+
+FUNC_MAP = {
+    "repository": {
+        "create": {
+            "github": github_create_repo_func,
+            "bitbucket": bitbucket_create_repo_func 
+        },
+        "delete" .. etc.
+    }
+}
+
+makes sense ?
+
+Then call it like this
+
+arguments will be a dictionary extracted from query,
+
+for this particular instance it would be this:
+
+arguments = {
+    "name": "abcd"
+}
+
+FUNC_MAP[query_domain][query_type][domain_provider](**arguments)
+
+This much makes sense ?
+yes sir surely I m getitng your point
+this will make the process really simplified.
+But sir, tell me one more thing, how will I extract the arguments?
+
+using NER ?
+
+yes sir
+The previous one file I have of ner that I have showed you. Should I use that one only?
+
+That or something similar to that should work. I mean even if you use the same file it should be an issue.
+
+Are you able to extract query_type and domain ?
+yes sir for domain i.e. whether the query is create, delete or etc we are getting that
+
+and sir for query_type, I have to figure out something
+isnt cosine similarity working for this ?
+
+Just tokenize the sentence and see if a token has > 0.80 similarity to a word .. it should be pretty accurate.
+okk sir I will do it that way
+Sir I m checking the word2vec and I , thinking to use that for finding query_type, yeah I sent that gensim thing
+did u check it ?
+It should be pretty straightforward as well.
+Yes sir I have used that a little to understand its use
+Tonight I will work on that and also I have studied about making a dockerfile
+I will show u that also tomorrow
+okay sure.
+
+You understood the approach right ?
+yes sir I understand that
+So sir should I change this file naa
+which file name ?
+
+sir??
+sir are u here??
+
+I would suggest you to keep a central query.json for NER, because the task doesnt really depend on the domain anymore.
+
+What I mean is,
+
+Create a repository named xyz
+Create a task with description abcd efgh
+Create a task that has descrption abcd efgh
+Create a story that has description ..
+
+Doesnt really matter right whether it comes for JIRA, Github, Confluence or whatever..?
+
+sir then where we will run that query matters naa
+say a new project or tasks are created for JIRA
+and creating a new repo or opening a new issue or pull reqest is for bitbucket or github
+
+yes sir obviously
+sir actually for that we have 4 different pages separate for github, jira, bitbucket and Confluence
+so we actually dont need NER for thatw
+NER will be used for getting query_type and domain to get the right function to call
+
+Yes but thats something "static" isnt it ?
+
+either it comes directly from settings file or it has a fixed token.
+
+You dont really need to do NER for this.
+Does it make sense ?
+
+I would suggest that NER should be used for getting the arguments only.
+
+domain and query_type are very trivial to determine.
+
+Domain = Cosine similarity of token against ("repository", "project", "user" ,... etc.)
+Query_Type = Word2Vec similarity of token against ("create", "delete", "update", "get")
+
+Ohh okk okkk now I get the complete point
+Yes sir I get what you are telling
+
+Also as you just told that you have one "deterministic" thing that is domain_provider
+ie. Confluence, Github, Bitbucket etc. then make the FUNC_MAP like this.
+
+
+
+FUNC_MAP = {
+    "github": {
+        "create": {
+            "repository": github_create_repo_func,
+        },
+        "delete" .. etc.
+    },
+    "bitbucket": {
+        "create": {
+            "repository": bitbucket_create_repo_func,
+        },
+        "delete" .. etc.
+    }
+}
+
+Reason is that you go from highest confidence to lowest.
+
+"github", "bitbucket" ... etc. is very deterministic. You have that value beforehands with 100% accuracy.
+"create", "delete" etc. can also be pretty accurately determied. with a very ..
+no problem.
+
+Friend tha koi ? ;D
+yes sir
+actually satyarth anydesk se connected hai
+toh usne glti se type kr diya
+sir please continue
+I have disconnected him
+Sahi hai.
+
+keep the code flow like this.
+
+def get_query_result():
+    query_sentence = "whatever"
+    query_result = process_query(query_sentence, domain_provider)
+    return query_result
+
+
+def process_query(query_sentence, domain_provider):
+    preprocessed_query = preprocess_query(query_sentence)
+    query_domain = get_domain(preprocessed_query)
+    query_type = get_query_type(preprocessed_query)
+    query_args = get_query_args(preprocessed_query)
+    return FUNC_MAP[domain_provider][query_type][query_domain](**query_args)
+
+should do the job.
+
+yes sir I understand this thing now
+sir yha yhi hoga naa
+what ?
+
+yes
+
+query_domain = repository, user, etc.
+query_type = create, delete, update, get
+domain_providr = confluence, bitbucket etc. 
+query_args = {"name": "xyz",} etc.
+haan sir I get all this
+I will implement it tonight and will show you tomorrow t

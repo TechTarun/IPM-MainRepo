@@ -48,13 +48,14 @@ def getAllUsers():
   for ctr in range(total_users):
     details = dict()
     if result[ctr]['accountType'] == 'atlassian':
-      details['Name'] = result[ctr]['displayName']
+      details['accountId'] = result[ctr]['accountId']
       details['emailAddress'] = result[ctr]['emailAddress']
-      all_users[result[ctr]['accountId']] = details
+      all_users[result[ctr]['displayName']] = details  # assume that 2 users do not have same full name
   return all_users
 
-# getAllProjects()
-# getAllUsers()
-# print(all_projects)
-# print(all_users)
+getAllProjects()
+getAllUsers()
+# print(all_user)
+print(all_projects)
+print(all_users)
 # getSpecificProject()
