@@ -8,6 +8,7 @@ def Jira(request):
     return render(request, 'Jira/Jira.html', {'query':"", 'output':""})
 
 def listenJiraQuery(request):
+    speak.say("Speak your query")
     query = listen.listenInput()
     return render(request, 'Jira/Jira.html', {'query':query, 'output':""})
 

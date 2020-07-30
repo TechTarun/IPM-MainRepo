@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from InputOutputFiles import Speech_to_Text as listen
+from InputOutputFiles import Text_to_Speech as speak
+import base
 
 def Github(request):
-    return render(request, 'Github/github.html', {'query':"", 'output':""})
+    return render(request, 'Github/Github.html', {'query':"", 'output':""})
 
 def listenGithubQuery(request):
+    speak.say("Speak your query")
     query = listen.listenInput()
     return render(request, 'Github/Github.html', {'query' : query, 'output':""})
 

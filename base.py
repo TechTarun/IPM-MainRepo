@@ -3,6 +3,7 @@ from GithubFiles.Github_api import Git
 import config_file as config
 from InputOutputFiles import Speech_to_Text as listen
 from InputOutputFiles import Text_to_Speech as speak
+from InputOutputFiles import Process_input as process
 
 
 jira = Jira(config.JIRA_BASE_URL, config.JIRA_USER_EMAIL, config.JIRA_ACCESS_TOKEN)
@@ -10,12 +11,67 @@ github = Git(config.GITHUB_ACCESS_TOKEN)
 args = {}
 #bitbucket object
 #confluence object
-query_type_list ={'create':['create', 'make', 'build', 'built', 'form', 'generate'], 'delete':['delete', 'remove', 'clear', 'erase', 'trash', 'bin'], 'update':['update', 'modify', 'change', 'edit'], 'details':['get', 'fetch', 'show', 'details'], 'transition':['to do', 'in progress', 'done'], 'assign':['assign']}
-domain_list = ['repository', 'project', 'user', 'issue' , 'ticket']
+jira_query_type_list = {'create':['create', 'make', 'build', 'built', 'form', 'generate', 'add'], 'delete':['delete', 'remove', 'clear', 'erase', 'trash', 'bin'], 'update':['update', 'modify', 'change', 'edit'], 'details':['get', 'fetch', 'show', 'details'], 'transition':['to do', 'in progress', 'done'], 'assign':['assign']}
+jira_domain_list = ['project', 'user', 'issue' , 'ticket']
+
+
+github_query_type_list = {'create':['create', 'make', 'form', 'add'], 'close':['close', 'end'], 'delete':['delete', 'remove'], 'search':['search', 'find'], 'details':['show', 'detail', 'get', 'fetch']}
+github_domain_list = ['repository', 'file', 'issue', 'commit']
+github_subdomain_list = ['body', 'label', 'number', 'latest', 'good first issue', 'language', 'open']
+
+query_type_list_dict = {"Jira":jira_query_type_list, "Github":github_query_type_list}
+domain_list_dict = {"Jira":jira_domain_list, "Github":github_domain_list}
+subdomain_list_dict = {"Github":github_subdomain_list}
 
 #################### query map #####################
 QUERY_MAP = {
     "Github" : {
+        "create" : {
+            "repository" : {
+                None : {"function":github.createNewRepo, "args":["repo name"]}
+            },
+            "file" : {
+                None : {"function":github.createNewFileInRepo, "args":["repo name", "file name"]}
+            },
+            "issue" : {
+                None : {"function":github.createNewIssue, "args":["repo name", "title"]},
+                "body" : {"function":github.createIssueWithBody, "args":["repo name", "title", "body description"]},
+                "label" : {"function":github.createIssueWithLabel, "args":["repo name", "title", "label"]}
+            }
+        },
+        "close" : {
+            "issue" : {
+                "open" : {"function":github.closeAllOpenIssues, "args":["repo name"]},
+                "number" : {"function":github.closeIssueByNumber, "args":["repo name", "issue number"]},
+                None : {"function":github.closeIssueByNumber, "args":["repo name", "issue number"]}
+            }
+        },
+        "delete" : {
+            "file" : {
+                None : {"function":github.deleteFileFromRepo, "args":["repo name", "file name"]}
+            }
+        },
+        "search" : {
+            "repository" : {
+                "good first issue" : {"function":github.searchRepoWithGoodFirstIssue, "args":[]}
+            },
+            "repository" : {
+                "language" : {"function":github.searchRepoByLanguage, "args":["language"]}
+            }
+        },
+        "details" : {
+            "issue" : {
+                "open" : {"function":github.listOfOpenIssues, "args":["repo name"]},
+                None : {"function":github.getIssueByNumber, "args":["repo name", "issue number"]}
+            },
+            "repository" : {
+                "label" : {"function":github.getLabelsOfRepo, "args":["repo name"]},
+                None : {"function":github.getAllContentsOfRepo, "args":["repo name"]}
+            },
+            "commit" : {
+                "latest" : {"function":github.getLatestCommitDateOfUser, "args":[]}
+            }
+        }
     },
 
     "Jira" : {
@@ -53,13 +109,14 @@ QUERY_MAP = {
 
 ################### get query type ##################
 
-def getQueryType(text):
+def getQueryType(text, provider):
+    query_type_list = query_type_list_dict[provider]
     query_type = ""
     """query type includes create, delete, assign, transition, update, details"""
     for key in query_type_list:
         value = query_type_list[key]
         for word in value:
-            if word in text:
+            if word == text.split()[0]:
                 query_type = key
                 return query_type
 
@@ -68,8 +125,9 @@ def getQueryType(text):
 
 ################### get domain #####################
 
-def getDomain(text):
+def getDomain(text, provider):
     """domain includes repository, project, user, issue"""
+    domain_list = domain_list_dict[provider]
     domain = ""
     for word in domain_list:
         if word in text:
@@ -80,15 +138,35 @@ def getDomain(text):
 
 ################### end domain #####################
 
+################### get sub domain #####################
+
+def getSubDomain(text, provider):
+    """domain includes repository, project, user, issue"""
+    subdomain_list = subdomain_list_dict[provider]
+    subdomain = None
+    for word in subdomain_list:
+        if word in text:
+            subdomain = word
+            return subdomain
+
+################### end sub domain #####################
+
 ################# get arguments ################
 
-def getArgs(text, provider, domain, query_type):
+def getArgs(text, provider, query_type, domain, subdomain=None):
     params = {}
-    args = QUERY_MAP[provider][query_type][domain]["args"]
+    if provider not in ['Github', 'Bitbucket']:
+        args = QUERY_MAP[provider][query_type][domain]["args"]
+    else:
+        args = QUERY_MAP[provider][query_type][domain][subdomain]["args"]
+    if len(args) == 0:
+        return params
     speak.say("Please give required details")
     for arg in args:
         speak.say("What is"+arg)
         params[arg] = listen.listenInput()
+        if arg == "file name":
+            params[arg] = process.createFileName(params[arg])
     print(params)
     return params
 
@@ -97,12 +175,20 @@ def getArgs(text, provider, domain, query_type):
 ################### get APi #################
 
 def getAPIOutput(text, provider):
-    domain = getDomain(text)
-    query_type = getQueryType(text)
-    print(domain)
+    text = process.extractRootwords(text)
+    domain = getDomain(text, provider)
+    query_type = getQueryType(text, provider)
+    subdomain = None
+    if provider in ['Github', 'Bitbucket']:
+        subdomain = getSubDomain(text, provider)
     print(query_type)
-    args = getArgs(text, provider, domain, query_type)  
-    output = QUERY_MAP[provider][query_type][domain]["function"](**args)
+    print(domain)
+    print(subdomain)
+    args = getArgs(text, provider, query_type, domain, subdomain)
+    if provider not in ['Github', 'Bitbucket']:
+        output = QUERY_MAP[provider][query_type][domain]["function"](**args)
+    else:
+        output = QUERY_MAP[provider][query_type][domain][subdomain]["function"](**args)
     return output
 
 ################### end get API ###############

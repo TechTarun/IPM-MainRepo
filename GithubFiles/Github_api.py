@@ -5,14 +5,16 @@ from MailFiles import send_mail
 
 class Git(object):          #named Git to avoid name conflicts
 
-    def __init__(self, access_token):
-        git = Github(access_token)
-        all_repo = git_start.getAllRepo()
-        user = git_start.getUser()
-        output = ""
-        mail_body = dict()
+    all_repo = git_start.getAllRepo()
+    user = git_start.getUser()
 
-    def searchRepoByLanguage(self,lan):
+    def __init__(self, access_token):
+        self.git = Github(access_token)
+        self.output = ""
+        self.mail_body = dict()
+
+    def searchRepoByLanguage(self, **args):
+        lan = args["language"]
         try:
             foundRepos = list()
             for repo in self.git.get_user().get_repos():
@@ -32,7 +34,8 @@ class Git(object):          #named Git to avoid name conflicts
         # speak.say(self.output)
         return self.output
         
-    def listOfOpenIssues(self,reponame):
+    def listOfOpenIssues(self, **args):
+        reponame = args["repo name"]
         try:
             repo = self.git.get_user().get_repo(reponame) 
             open_issues = repo.get_issues(state='open')
@@ -51,7 +54,8 @@ class Git(object):          #named Git to avoid name conflicts
         return self.output
         
 
-    def getLabelsOfRepo(self,reponame):
+    def getLabelsOfRepo(self, **args):
+        reponame = args["repo name"]
         try:
             repo = self.git.get_user().get_repo(reponame) 
             labels = repo.get_labels()
@@ -66,9 +70,10 @@ class Git(object):          #named Git to avoid name conflicts
                 self.output = "No labels found"
         except:
             self.output="Error in geeting the information"
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
 
-    def searchRepoWithGoodFirstIssue(self):
+    def searchRepoWithGoodFirstIssue(self, **args):
         try:
             repositories = self.git.search_repositories(query='good-first-issues:>3')
             gfissue=list()
@@ -85,9 +90,11 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output="Error in getting the information"
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
 
-    def getAllContentsOfRepo(self,reponame):
+    def getAllContentsOfRepo(self, **args):
+        reponame = args["repo name"]
         try:
             repo = self.git.get_user().get_repo(reponame) 
             contents = repo.get_contents("")
@@ -103,9 +110,11 @@ class Git(object):          #named Git to avoid name conflicts
                 self.output = "No labels found"
         except:
             self.output="Error in geeting the information"
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
 
-    def createNewRepo(self,reponame):
+    def createNewRepo(self, **args):
+        reponame = args["repo name"]
         try:
             self.git.get_user().create_repo(reponame)
             self.output="Successfully created."
@@ -115,10 +124,14 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output = "Error in creating repository."
-        speak.say(self.output)
+        # speak.say(self.output)
         return self.output
 
-    def createNewFileInRepo(self,reponame,filename,description="This is default description",commit="latest commit"):
+    def createNewFileInRepo(self, **args):
+        reponame = args["repo name"]
+        filename = args["file name"]
+        description = "This is the default description given by IPM"
+        commit = "Added a file {0} by IPM".format(filename)
         try:
             repo = self.git.get_user().get_repo(reponame)               #to avoid passing username, use get_user()
             repo.create_file(filename, commit, description)
@@ -132,10 +145,12 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output="Error in creating the file"
-        speak.say(self.output)
+        # speak.say(self.output)
         return self.output
 
-    def deleteAFileFromRepo(self,reponame,filename):
+    def deleteFileFromRepo(self, **args):
+        reponame = args["repo name"]
+        filename = args["file name"]
         try:
             repo = self.git.get_user().get_repo(reponame)  
             contents = repo.get_contents(filename)
@@ -149,26 +164,30 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output="Error in deleting the file"
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
 
-    def updateAFileInRepo(self,reponame,filename,description="This is deafult text.",commit="updated the file"):
-        try:
-            repo = self.git.get_user().get_repo(reponame)
-            contents = repo.get_contents(filename)
-            repo.update_file(contents.path, commit, description, contents.sha)
-            self.output="Successfully updated the file."
-            self.mail_body={
-                "Repo name":reponame,
-                "File Name":filename,
-                "Commit Message":commit,
-                "Description":description
-            }
-            send_mail.sendMail(self.mail_body)
-        except:
-            self.output="Error in updating the file"
-        speak.say(self.output)
+    # def updateAFileInRepo(self, **args):
+    #     reponame = args["repo name"]
+    #     filename = args["file name"]
+    #     description = args["description"]
+    #     try:
+    #         repo = self.git.get_user().get_repo(reponame)
+    #         contents = repo.get_contents(filename)
+    #         repo.update_file(contents.path, commit, description, contents.sha)
+    #         self.output="Successfully updated the file."
+    #         self.mail_body={
+    #             "Repo name":reponame,
+    #             "File Name":filename,
+    #             "Commit Message":commit,
+    #             "Description":description
+    #         }
+    #         send_mail.sendMail(self.mail_body)
+    #     except:
+    #         self.output="Error in updating the file"
+    #     speak.say(self.output)
 
-    def getLatestCommitDateOfRepo(self,reponame):
+    def getLatestCommitDateOfUser(self, **args):
         try:
             author=self.git.get_user().login
             commits = self.git.search_commits(query = 'author:'+author+' sort:author-date-desc')
@@ -181,7 +200,8 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output="Error in getting the details"
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
     
     # ==================================================================================
         # PULL REQUEST        NOT WORKING 
@@ -191,7 +211,9 @@ class Git(object):          #named Git to avoid name conflicts
     #     pr = repo.create_pull(title = title1, body = body1, head='')
     # ====================================================================================
 
-    def createNewIssue(self,reponame,title):
+    def createNewIssue(self, **args):
+        reponame = args["repo name"]
+        title = args["title"]
         try:
             repo = self.git.get_user().get_repo(reponame)
             repo.create_issue(title=title)
@@ -203,10 +225,13 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output = "Error in creating the issue."
-        speak.say(self.output)
+        # speak.say(self.output)
         return self.output
 
-    def createIssueWithBody(self,reponame,title,body):
+    def createIssueWithBody(self, **args):
+        reponame = args["repo name"]
+        title = args["title"]
+        body = args["body description"]
         try:
             repo = self.git.get_user().get_repo(reponame)
             repo.create_issue(title=title, body=body)
@@ -219,9 +244,13 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output = "Error in creating the issue."
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
 
-    def createIssueWithLabel(self,reponame,title,body,labels):
+    def createIssueWithLabel(self, **args):
+        reponame = args["repo name"]
+        title = args["title"]
+        labels = args["label"]
         try:
             repo = self.git.get_user().get_repo(reponame)
             label = repo.get_label(labels)
@@ -236,9 +265,12 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output = "Error in creating issue."
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
         
-    def getIssueByNumber(self,reponame,issue_number):
+    def getIssueByNumber(self, **args):
+        reponame = args["repo name"]
+        issue_number = int(args["issue number"])
         try:
             repo = self.git.get_user().get_repo(reponame)
             iss=repo.get_issue(number=issue_number)
@@ -252,25 +284,45 @@ class Git(object):          #named Git to avoid name conflicts
             send_mail.sendMail(self.mail_body)
         except:
             self.output = "Error in getting the issue."
-        speak.say(self.output)
+        # speak.say(self.output)
+        return self.output
 
-    def closeIssueByNumber(self,reponame,issue_number):
-        try:
-            repo = self.git.get_user().get_repo(reponame)
-            open_issue = repo.get_issue(number=issue_number)
-            open_issue.edit(state='closed')
-            self.output="The issue is closed"
-            self.mail_body={
-                "Repo name":reponame,
-                "Issue number":issue_number,
-                "issue state":"closed"
-            }
-            send_mail.sendMail(self.mail_body)
-        except:
-            self.output = "Error in closing the issue."
-        speak.say(self.output)
+    # def closeIssueByNumber(self, **args):
+    #     reponame = args["repo name"]
+    #     issue_number = args["issue number"]
+    #     try:
+    #         repo = self.git.get_user().get_repo(reponame)
+    #         open_issue = repo.get_issue(number=issue_number)
+    #         open_issue.edit(state='closed')
+    #         self.output="The issue is closed"
+    #         self.mail_body={
+    #             "Repo name":reponame,
+    #             "Issue number":issue_number,
+    #             "issue state":"closed"
+    #         }
+    #         send_mail.sendMail(self.mail_body)
+    #     except:
+    #         self.output = "Error in closing the issue."
+    #     # speak.say(self.output)
+    #     return self.output
+    def closeIssueByNumber(self, **args):
+        reponame = args["repo name"]
+        issue_number = int(args["issue number"])
+        repo = self.git.get_user().get_repo(reponame)
+        open_issue = repo.get_issue(number=issue_number)
+        open_issue.edit(state='closed')
+        self.output="The issue is closed"
+        self.mail_body={
+            "Repo name":reponame,
+            "Issue number":issue_number,
+            "issue state":"closed"
+        }
+        send_mail.sendMail(self.mail_body)
+        # speak.say(self.output)
+        return self.output
 
-    def closeAllOpenIssues(self,reponame):
+    def closeAllOpenIssues(self, **args):
+        reponame = args["repo name"]
         try:
             repo = self.git.get_user().get_repo(reponame)
             open_issues = repo.get_issues(state='open')

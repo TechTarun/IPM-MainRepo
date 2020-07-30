@@ -8,8 +8,8 @@ def listenInput():
     mic = sr.Microphone()
     with mic as source:
         r.adjust_for_ambient_noise(source)
-        speak.say('Speak your query')
         audio = r.listen(source)
     text = r.recognize_google(audio, language='en')
-    speak.say(text)
+    print("You said = ", text)
     return text
+

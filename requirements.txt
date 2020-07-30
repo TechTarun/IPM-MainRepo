@@ -30,7 +30,7 @@ packaging==20.4
 pipwin==0.5.0
 playsound==1.2.2
 psycopg2==2.8.5
-PyAudio @ file:///E:/Projects/IPM/resources/PyAudio-0.2.11-cp37-cp37m-win_amd64.whl
+PyAudio
 pydub==0.24.1
 PyGithub==1.51
 pyjsparser==2.7.1
