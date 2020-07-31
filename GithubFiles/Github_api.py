@@ -362,3 +362,38 @@ class Git(object):          #named Git to avoid name conflicts
 # github.getIssueByNumber('gittest',6)
 # github.closeIssueByNumber('gittest',6)
 # github.closeAllOpenIssues('gittest')
+"""
+import requests
+from requests.auth import HTTPBasicAuth
+import json
+
+
+# def searchCode():
+
+# auth = HTTPBasicAuth(user_email, access_token)
+base_url="https://api.github.com/"
+url= '/search/code'
+api= base_url+url
+
+authurl = base_url+"user"
+a = requests.get(authurl, auth=('ksatyarth2','3c0450a2f009731b56e0f6c3a683cea6f3cc6044'))
+res = json.loads(a.text)
+print(res['login'])
+auth = HTTPBasicAuth('ksatyarth2', '3c0450a2f009731b56e0f6c3a683cea6f3cc6044')
+headers = {
+            "Accept": "application/json",
+            
+        }
+
+query = json.dumps({
+    'q':"model+in:readme+user:ksatyarth2"
+})
+response = requests.request(
+            "GET",
+            api,    
+            headers=headers,
+            auth=auth,
+            params= query
+            )
+print(response)
+"""

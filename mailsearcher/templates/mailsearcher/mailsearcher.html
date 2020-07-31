@@ -321,7 +321,7 @@ of Simple CSS Waves-->
     <div class="search-wrapper">
 
     <div class="input-holder">
-        <form class="search-container" action="#" method="post">
+        <form class="search-container" action="{% url 'search_mail' %}" method="post">
        {% csrf_token %}
         <input type="text" class="search-input" placeholder="What can I help you with today?"
  name="query" value='{{query}}'/>
@@ -365,12 +365,13 @@ viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
 <div style="text-align:center;padding-top:100px; font-weight:80px;">
   <!-- python script -->
 
-    {% for mail in mail_list %}
+<!--     {% for mail in mail_list %}
         {%for item in mail %}
         <h5>{{item}}</h5>
         {%endfor%}
     <hr>
-    {%endfor%}
+    {%endfor%} -->
+    {{output}}
 
 </div>
 

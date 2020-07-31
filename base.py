@@ -1,5 +1,6 @@
 from JiraFiles.Jira_api import Jira
 from GithubFiles.Github_api import Git
+from MailFiles.email_manager import EmailManager
 import config_file as config
 from InputOutputFiles import Speech_to_Text as listen
 from InputOutputFiles import Text_to_Speech as speak
@@ -8,6 +9,7 @@ from InputOutputFiles import Process_input as process
 
 jira = Jira(config.JIRA_BASE_URL, config.JIRA_USER_EMAIL, config.JIRA_ACCESS_TOKEN)
 github = Git(config.GITHUB_ACCESS_TOKEN)
+emailmanager = EmailManager()
 args = {}
 #bitbucket object
 #confluence object
@@ -22,6 +24,9 @@ github_subdomain_list = ['body', 'label', 'number', 'latest', 'good first issue'
 query_type_list_dict = {"Jira":jira_query_type_list, "Github":github_query_type_list}
 domain_list_dict = {"Jira":jira_domain_list, "Github":github_domain_list}
 subdomain_list_dict = {"Github":github_subdomain_list}
+
+mail_type_list = {"receive" : ['receive', 'find', 'show', 'get', 'fetch', 'bring', 'search'], "send" : ['send', 'create']}
+mail_domain_list = ["sender", "subject"]
 
 #################### query map #####################
 QUERY_MAP = {
@@ -106,6 +111,22 @@ QUERY_MAP = {
     }
 } 
 ################### end query map ####################
+
+################### mail map ######################
+MAIL_MAP = {
+    "receive" : {
+        "sender" : {
+            "subject" : {"function":emailmanager.searchMailBySenderSubject, "args":["sender name", "subject"]},
+            None : {"function":emailmanager.searchMailBySender, "args":["sender name"]}
+        },
+        "subject" : {
+            "sender" : {"function":emailmanager.searchMailBySenderSubject, "args":["sender name", "subject"]},
+            None : {"function":emailmanager.searchMailBySubject, "args":["subject"]}
+        }
+    },
+    "send" : {"function":emailmanager.sendMail, "args":["receiver email", "subject", "message"]}
+}
+#################### end mail map ####################
 
 ################### get query type ##################
 
@@ -192,3 +213,73 @@ def getAPIOutput(text, provider):
     return output
 
 ################### end get API ###############
+
+################ get mail type ################
+def getMailType(text):
+    mail_type = ""
+    for key in mail_type_list:
+        value = mail_type_list[key]
+        for word in value:
+            if word in text:
+                mail_type = key
+                return mail_type
+################ end get mail type ###############
+
+############### get mail domain(in case of receive mail type) ####################
+def getMailDomain(text):
+    mail_domain = []
+    for domain in mail_domain_list:
+        if domain in text:
+            mail_domain.append(domain)
+    return mail_domain
+############### end get mail domain ####################
+
+############## get mail args ##################
+def getMailArgs(text, mail_type, mail_domain):
+    username = config.SENDER_MAIL_ID
+    password = config.SENDER_MAIL_PASSWORD
+    params = {"username":username, "password":password}
+    if mail_domain == None:
+        args = MAIL_MAP[mail_type]["args"]
+
+    elif len(mail_domain) == 1:
+        domain = mail_domain[0]
+        subdomain = None
+        args = MAIL_MAP[mail_type][domain][subdomain]["args"]
+
+    elif len(mail_domain) == 2:
+        domain = mail_domain[0]
+        subdomain = mail_domain[1]
+        args = MAIL_MAP[mail_type][domain][subdomain]["args"]
+    speak.say("Please give required details")
+    for arg in args:
+        speak.say("What is"+arg)
+        params[arg] = listen.listenInput()
+    print(params)
+    return params
+
+
+############## end get mail args ###################
+
+################# get mail output ################
+def getMailOutput(text):
+    text = process.extractRootwords(text)
+    mail_type = getMailType(text)
+    if mail_type == None:
+        return "Query not clear, please try again!!"
+    elif mail_type == "receive":
+        mail_domain = getMailDomain(text)
+        if len(mail_domain) == 0:
+            return "Query not clear, please try again with keywords sender or subject!!"
+        args = getMailArgs(text, mail_type, mail_domain)
+        if len(mail_domain) == 1:
+            domain = mail_domain[0]
+            subdomain = None
+        elif len(mail_domain) == 2:
+            domain = mail_domain[0]
+            subdomain = mail_domain[1]
+        output = MAIL_MAP[mail_type][domain][subdomain]["function"](**args)
+    elif mail_type == "send":
+        args = getMailArgs(text, mail_type, None)
+        output = MAIL_MAP[mail_type]["function"](**args)
+    return output

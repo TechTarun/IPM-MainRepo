@@ -3,7 +3,6 @@ from requests.auth import HTTPBasicAuth
 import json
 import Jira_get_started as jira_start
 from MailFiles import send_mail
-import Text_to_Speech as speak
 
 class Jira(object):
 
